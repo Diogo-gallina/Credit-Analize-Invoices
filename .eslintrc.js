@@ -1,5 +1,3 @@
-/* eslint-disable no-useless-escape */
-/* eslint-disable prettier/prettier */
 module.exports = {
   env: {
     es2022: true,
@@ -53,7 +51,6 @@ module.exports = {
       {
         newlinesBetween: 'always',
         groups: [
-          // Ordenar os novos módulos alfabeticamente, manter shared e models no topo e '../', './' e '..' no final
           '/^\.\.\//', // imports começando com '../'
           '/^\.\//', // imports começando com './'
           '/^\.\.$/', // imports que são exatamente '..'
@@ -67,7 +64,9 @@ module.exports = {
   },
   settings: {
     'import/resolver': {
-      typescript: {},
+      typescript: {
+        alwaysTryTypes: true,
+      },
     },
   },
 };
