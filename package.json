@@ -15,5 +15,8 @@
     "prettier": "^3.3.2",
     "ts-jest": "^29.2.2",
     "typescri": "^1.0.4"
+  },
+  "scripts": {
+    "test": "jest"
   }
 }
