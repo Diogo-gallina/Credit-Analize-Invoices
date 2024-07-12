@@ -20,5 +20,8 @@
   "scripts": {
     "test": "jest --runInBand --detectOpenHandles",
     "test:watch": "jest --watch --passWithNoTests --runInBand --coverage=false"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1658.0"
   }
 }
