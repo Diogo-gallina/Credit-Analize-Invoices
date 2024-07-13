@@ -6,12 +6,13 @@
   },
   "extends": [
     "airbnb-base",
+    "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
   "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "tsconfig.json",
+    "project": "./tsconfig.json",
     "sourceType": "module"
   },
   "globals": {
@@ -34,9 +35,7 @@
     "no-unused-vars": "off",
     "no-await-in-loop": "off",
     "no-empty-function": "off",
-    "@typescript-eslint/no-use-before-define": [
-      "error"
-    ],
+    "@typescript-eslint/no-use-before-define": ["error"],
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -68,12 +67,12 @@
   },
   "settings": {
     "import/resolver": {
-      "typescript": {},
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.json"
+      },
       "node": {
-        "extensions": [
-          ".js",
-          ".ts"
-        ]
+        "extensions": [".js", ".ts"]
       }
     }
   }
