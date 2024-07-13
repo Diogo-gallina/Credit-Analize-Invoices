@@ -6,6 +6,9 @@
         "baseUrl": "./src",
         "moduleResolution": "node",
         "esModuleInterop": true,
-        "allowJs": true
-    }
+        "allowJs": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": ["."],
 }
