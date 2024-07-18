@@ -24,6 +24,7 @@
     "test:watch": "jest --watch --passWithNoTests --runInBand --coverage=false"
   },
   "dependencies": {
-    "aws-sdk": "^2.1658.0"
+    "aws-sdk": "^2.1658.0",
+    "mongodb": "^6.8.0"
   }
 }
