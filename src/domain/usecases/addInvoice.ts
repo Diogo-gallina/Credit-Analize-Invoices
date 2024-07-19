@@ -1,6 +1,7 @@
 import { InvoiceModel } from 'domain/models/invoice';
 
 export interface AddInvoiceModel {
+  userId: string;
   issuerName: string;
   document: string;
   paymentDate: Date;
