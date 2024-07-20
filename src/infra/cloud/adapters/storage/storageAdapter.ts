@@ -7,6 +7,7 @@ class StorageAdapter implements IStorageAdapter {
   constructor(private readonly storageHelper: IStorageHelper) {
     this.storageHelper = s3Helper;
   }
+
   async uploadFile(bucketName: string, fileName: string, fileContent: Buffer | string): Promise<void> {
     await this.storageHelper.uploadFile(bucketName, fileName, fileContent);
   }

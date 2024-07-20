@@ -1,6 +1,10 @@
 import { UserModel } from 'domain/models/user';
 import { IStorageAdapter } from 'infra/cloud/adapters/protocols/storageAdapterInterface';
 
+interface UrlFile {
+  url: string;
+}
+
 const BUCKET_NAME = 'invoice-files';
 
 export class UploadInvoiceUseCase {
@@ -8,8 +12,7 @@ export class UploadInvoiceUseCase {
     this.storageAdapter = storageAdapter;
   }
 
-  async execute(invoiceFile: FileList, userData: UserModel): Promise<void> {
-    const userEmail = userData.email;
+  async execute(invoiceFile: FileList, userEmail: string, fileName: string): Promise<void> {
     const userPath = `${userEmail}/`;
 
     const existingPaths = await this.storageAdapter.getAllPathsInBucket(BUCKET_NAME);
@@ -17,11 +20,10 @@ export class UploadInvoiceUseCase {
 
     if (!userPathExists) await this.storageAdapter.createPathInBucket(BUCKET_NAME, userPath);
 
-    const timestamp = Date.now();
-    const fileName = `Invoice-${timestamp}`;
     const arrayBuffer = await invoiceFile[0].arrayBuffer();
     const fileContent = Buffer.from(arrayBuffer);
+    const fullFilePath = `${userPath}${fileName}`;
 
-    await this.storageAdapter.uploadFile(BUCKET_NAME, `${userPath}${fileName}`, fileContent);
+    await this.storageAdapter.uploadFile(BUCKET_NAME, fullFilePath, fileContent);
   }
 }
