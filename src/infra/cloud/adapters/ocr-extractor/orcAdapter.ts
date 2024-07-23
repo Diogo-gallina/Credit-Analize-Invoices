@@ -1,4 +1,4 @@
-import { IOcrHelper } from 'infra/cloud/aws/protocols/orcHelperInterface';
+import { IOcrHelper } from '@infra/cloud/aws/protocols/orcHelperInterface';
 import { AnalyzeDocumentResponse } from '@aws-sdk/client-textract';
 import { IOcrAdapter } from '../protocols/orcAdapterInterface';
 

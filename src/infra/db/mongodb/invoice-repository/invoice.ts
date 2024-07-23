@@ -1,6 +1,6 @@
-import { AddInvoiceRepository } from 'data/protocols/addInvoiceRepository';
-import { InvoiceModel } from 'domain/models/invoice';
-import { AddInvoiceModel } from 'domain/usecases/addInvoice';
+import { AddInvoiceRepository } from '@data/protocols/addInvoiceRepository';
+import { InvoiceModel } from '@domain/models/invoice';
+import { AddInvoiceModel } from '@domain/usecases/addInvoice';
 import { MongoHelper } from '../helpers/mongoHelper';
 
 export class InvoiceMongoRepository implements AddInvoiceRepository {

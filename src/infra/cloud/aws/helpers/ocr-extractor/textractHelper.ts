@@ -1,21 +1,8 @@
-import {
-  TextractClient,
-  TextractClientConfig,
-  AnalyzeDocumentCommand,
-  AnalyzeDocumentResponse,
-  FeatureType,
-} from '@aws-sdk/client-textract';
-import { IOcrHelper } from 'infra/cloud/aws/protocols/orcHelperInterface';
+import { TextractClient, AnalyzeDocumentCommand, AnalyzeDocumentResponse, FeatureType } from '@aws-sdk/client-textract';
+import { IOcrHelper } from '@infra/cloud/aws/protocols/orcHelperInterface';
+import { awsConfig } from '../../config/awsConfig';
 
-const textractConfig: TextractClientConfig = {
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-  },
-};
-
-const textractClient = new TextractClient(textractConfig);
+const textractClient = new TextractClient(awsConfig);
 
 export const textractHelper: IOcrHelper = {
   async analyzeDocument(bucketName: string, fileName: string): Promise<AnalyzeDocumentResponse> {

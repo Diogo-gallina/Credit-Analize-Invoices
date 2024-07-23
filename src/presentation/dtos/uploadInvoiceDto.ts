@@ -2,5 +2,5 @@ export interface UploadInvoiceDto {
   name: string;
   email: string;
   document: string;
-  invoiceFile: FileList;
+  invoiceFile: File;
 }

@@ -1,6 +1,6 @@
-import { AddUserRepository } from 'data/protocols/addUserRepository';
-import { UserModel } from 'domain/models/user';
-import { AddUserModel } from 'domain/usecases/addUser';
+import { AddUserRepository } from '@data/protocols/addUserRepository';
+import { UserModel } from '@domain/models/user';
+import { AddUserModel } from '@domain/usecases/addUser';
 import { MongoHelper } from '../helpers/mongoHelper';
 
 export class UserMongoRepository implements AddUserRepository {

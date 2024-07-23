@@ -1,6 +1,6 @@
-import { s3Helper } from 'infra/cloud/aws/helpers/storage/s3Helper';
+import { s3Helper } from '@infra/cloud/aws/helpers/storage/s3Helper';
 import { S3 } from 'aws-sdk';
-import { IStorageHelper } from 'infra/cloud/aws/protocols/storageHelperInterface';
+import { IStorageHelper } from '@infra/cloud/aws/protocols/storageHelperInterface';
 import { IStorageAdapter } from '../protocols/storageAdapterInterface';
 
 class StorageAdapter implements IStorageAdapter {

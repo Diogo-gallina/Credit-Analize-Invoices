@@ -1,8 +1,7 @@
 /* eslint-disable no-restricted-globals */
-import { IOcrAdapter } from 'infra/cloud/adapters/protocols/orcAdapterInterface';
+import { IOcrAdapter } from '@infra/cloud/adapters/protocols/orcAdapterInterface';
 import { AnalyzeDocumentResponse, Block, Relationship } from '@aws-sdk/client-textract';
-import { NotFoundKeyError } from 'app/errors/notFoundKeyError';
-import { InvalidTypeError } from 'app/errors/invalidTypeError';
+import { InvalidTypeError, NotFoundKeyError } from '@app/errors';
 
 export interface ExtractedInvoiceData {
   issuerName: string;
@@ -35,7 +34,6 @@ export class ExtractInvoiceDataUseCase {
     const value = await this.extractValueFromKeyValuePairs(analyzedData, /Emitente|Issuer Name/i);
 
     if (value) return value;
-
     throw new NotFoundKeyError('Issuer Name');
   }
 

@@ -1,6 +1,6 @@
-import { AddInvoice, AddInvoiceModel } from 'domain/usecases/addInvoice';
-import { InvoiceModel } from 'domain/models/invoice';
-import { AddInvoiceRepository } from 'data/protocols/addInvoiceRepository';
+import { AddInvoice, AddInvoiceModel } from '@domain/usecases/addInvoice';
+import { InvoiceModel } from '@domain/models/invoice';
+import { AddInvoiceRepository } from '@data/protocols/addInvoiceRepository';
 
 export class DbAddInvoice implements AddInvoice {
   constructor(private readonly addInvoiceRepository: AddInvoiceRepository) {

@@ -1,4 +1,4 @@
-import { InvoiceModel } from 'domain/models/invoice';
+import { InvoiceModel } from '@domain/models/invoice';
 
 export interface AddInvoiceModel {
   userId: string;
