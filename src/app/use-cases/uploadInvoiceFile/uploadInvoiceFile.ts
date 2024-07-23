@@ -1,9 +1,4 @@
-import { UserModel } from 'domain/models/user';
-import { IStorageAdapter } from 'infra/cloud/adapters/protocols/storageAdapterInterface';
-
-interface UrlFile {
-  url: string;
-}
+import { IStorageAdapter } from '@infra/cloud/adapters/protocols/storageAdapterInterface';
 
 const BUCKET_NAME = 'invoice-files';
 
@@ -12,7 +7,7 @@ export class UploadInvoiceUseCase {
     this.storageAdapter = storageAdapter;
   }
 
-  async execute(invoiceFile: FileList, userEmail: string, fileName: string): Promise<void> {
+  async execute(invoiceFile: File, userEmail: string, fileName: string): Promise<void> {
     const userPath = `${userEmail}/`;
 
     const existingPaths = await this.storageAdapter.getAllPathsInBucket(BUCKET_NAME);
