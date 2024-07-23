@@ -1,51 +1,52 @@
-import AWS, { S3 } from 'aws-sdk';
+import { S3Client, PutObjectCommand, ListObjectsV2Command, GetObjectCommand } from '@aws-sdk/client-s3';
 import { IStorageHelper } from '../../protocols/storageHelperInterface';
+import { awsConfig } from '../../config/awsConfig';
 
-const s3 = new AWS.S3();
+const s3 = new S3Client(awsConfig);
 
 export const s3Helper: IStorageHelper = {
   async uploadFile(bucketName: string, fileName: string, fileContent: Buffer | string): Promise<void> {
-    const params: S3.PutObjectRequest = {
+    const params = {
       Bucket: bucketName,
       Key: fileName,
       Body: fileContent,
     };
-    await s3.putObject(params).promise();
+    await s3.send(new PutObjectCommand(params));
   },
 
   async getAllPathsInBucket(bucketName: string): Promise<string[]> {
-    const params: S3.ListObjectsV2Request = {
+    const params = {
       Bucket: bucketName,
       Delimiter: '/',
     };
-    const data = await s3.listObjectsV2(params).promise();
+    const data = await s3.send(new ListObjectsV2Command(params));
     return data.CommonPrefixes?.map((prefix) => prefix.Prefix) || [];
   },
 
   async createPathInBucket(bucketName: string, pathName: string): Promise<void> {
-    const params: S3.PutObjectRequest = {
+    const params = {
       Bucket: bucketName,
       Key: `${pathName}/`,
       Body: '',
     };
-    await s3.putObject(params).promise();
+    await s3.send(new PutObjectCommand(params));
   },
 
-  async getAllFilesInPath(bucketName: string, pathName: string): Promise<S3.ObjectList> {
-    const params: S3.ListObjectsV2Request = {
+  async getAllFilesInPath(bucketName: string, pathName: string): Promise<any[]> {
+    const params = {
       Bucket: bucketName,
       Prefix: pathName,
     };
-    const data = await s3.listObjectsV2(params).promise();
+    const data = await s3.send(new ListObjectsV2Command(params));
     return data.Contents || [];
   },
 
-  async getOneFileInPath(bucketName: string, pathName: string, key: string): Promise<S3.GetObjectOutput> {
-    const params: S3.GetObjectRequest = {
+  async getOneFileInPath(bucketName: string, pathName: string, key: string): Promise<any> {
+    const params = {
       Bucket: bucketName,
       Key: `${pathName}/${key}`,
     };
-    const data = await s3.getObject(params).promise();
+    const data = await s3.send(new GetObjectCommand(params));
     return data;
   },
 };
