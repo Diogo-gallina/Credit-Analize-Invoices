@@ -13,6 +13,7 @@
     "@types/aws-sdk": "^2.7.0",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
+    "@types/multer": "^1.4.11",
     "@types/prettier": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^7.16.0",
     "@typescript-eslint/parser": "^7.16.0",
@@ -36,9 +37,7 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
-    "aws-sdk": "^2.1658.0",
     "express": "^4.19.2",
-    "module-alias": "^2.2.3",
     "mongodb": "^6.8.0",
     "multer": "^1.4.5-lts.1"
   }
