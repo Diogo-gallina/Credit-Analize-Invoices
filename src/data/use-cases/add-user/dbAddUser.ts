@@ -1,6 +1,6 @@
 import { AddUserRepository } from '@data/protocols/addUserRepository';
 import { UserModel } from '@domain/models/user';
-import { AddUser, AddUserModel } from '@domain/usecases/addUser';
+import { AddUser, AddUserModel } from '@domain/use-cases/addUser';
 
 export class DbAddUser implements AddUser {
   constructor(private readonly addUserRepository: AddUserRepository) {

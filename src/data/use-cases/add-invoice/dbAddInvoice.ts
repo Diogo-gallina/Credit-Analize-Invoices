@@ -1,4 +1,4 @@
-import { AddInvoice, AddInvoiceModel } from '@domain/usecases/addInvoice';
+import { AddInvoice, AddInvoiceModel } from '@domain/use-cases/addInvoice';
 import { InvoiceModel } from '@domain/models/invoice';
 import { AddInvoiceRepository } from '@data/protocols/addInvoiceRepository';
 
