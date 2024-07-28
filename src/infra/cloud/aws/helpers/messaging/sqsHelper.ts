@@ -44,7 +44,7 @@ function createSendMessageParams<T>(message: T, queueUrl: string, messageGroupId
     QueueUrl: queueUrl,
     MessageBody: JSON.stringify(message),
     MessageGroupId: messageGroupId,
-    MessageDeduplicationId: `message-${Date.now()}`,
+    MessageDeduplicationId: `message-duplication-${Date.now()}`,
   };
 }
 
