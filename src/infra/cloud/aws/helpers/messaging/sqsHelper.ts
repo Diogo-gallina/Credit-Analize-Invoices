@@ -1,4 +1,10 @@
-import { SendMessageCommand, SendMessageCommandInput, SQSClient } from '@aws-sdk/client-sqs';
+import {
+  DeleteMessageCommand,
+  ReceiveMessageCommand,
+  SendMessageCommand,
+  SendMessageCommandInput,
+  SQSClient,
+} from '@aws-sdk/client-sqs';
 import { awsConfig } from '../../config/awsConfig';
 import { IMessagingHelper } from '../../protocols/messagingHelperInterface';
 import { FailedSendMessageError } from '../../errors/FailedSendMessageError';
@@ -24,7 +30,37 @@ export const sqsHelper: IMessagingHelper = {
     }
   },
 
-  consumesMessage(): Promise<string> {
-    throw new Error('Function not implemented.');
+  async consumesMessage<T>(queueName: string): Promise<T[]> {
+    const queueUrl = `https://sqs.${awsConfig.region}.amazonaws.com/339712871292/${queueName}`;
+    const params = {
+      QueueUrl: queueUrl,
+      MaxNumberOfMessages: 10,
+      VisibilityTimeout: 15,
+      WaitTimeSeconds: 10,
+    };
+
+    try {
+      const receiveCommand = new ReceiveMessageCommand(params);
+      const { Messages } = await client.send(receiveCommand);
+      if (!Messages || Messages.length === 0) {
+        console.log('No messages to process.');
+        return [];
+      }
+      const processedMessages: T[] = Messages.map((message) => {
+        const parsedMessage: T = JSON.parse(message.Body!);
+        const deleteParams = {
+          QueueUrl: queueUrl,
+          ReceiptHandle: message.ReceiptHandle!,
+        };
+        const deleteCommand = new DeleteMessageCommand(deleteParams);
+        client.send(deleteCommand);
+        return parsedMessage;
+      });
+
+      return processedMessages;
+    } catch (error) {
+      console.error('Error receiving or deleting messages:', error);
+      return [];
+    }
   },
 };
