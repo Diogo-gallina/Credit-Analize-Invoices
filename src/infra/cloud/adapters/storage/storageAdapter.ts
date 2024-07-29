@@ -9,7 +9,7 @@ class StorageAdapter implements IStorageAdapter {
   }
 
   async uploadFile(bucketName: string, fileName: string, fileContent: Buffer | string): Promise<void> {
-    await this.storageHelper.uploadFile(bucketName, fileName, fileContent);
+    return this.storageHelper.uploadFile(bucketName, fileName, fileContent);
   }
 
   async getAllPathsInBucket(bucketName: string): Promise<string[]> {

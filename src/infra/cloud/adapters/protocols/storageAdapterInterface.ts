@@ -1,5 +1,5 @@
 export interface IStorageAdapter {
-  uploadFile(bucketName: string, fileName: string, fileContent: Buffer | string): Promise<string>;
+  uploadFile(bucketName: string, fileName: string, fileContent: Buffer | string): Promise<void>;
   getAllPathsInBucket(bucketName: string): Promise<string[]>;
   createPathInBucket(bucketName: string, pathName: string): Promise<void>;
   getAllFilesInPath(bucketName: string, pathName: string): Promise<any[]>;

@@ -5,20 +5,18 @@ import { awsConfig } from '../../config/awsConfig';
 const s3 = new S3Client(awsConfig);
 
 export const s3Helper: IStorageHelper = {
-  async uploadFile(bucketName: string, fileName: string, fileContent: Buffer | string): Promise<string> {
+  async uploadFile(bucketName: string, fileName: string, fileContent: Buffer | string): Promise<void> {
     const params = {
       Bucket: bucketName,
       Key: fileName,
       Body: fileContent,
     };
     await s3.send(new PutObjectCommand(params));
-    return `https://${bucketName}.s3.amazonaws.com/${fileName}`;
   },
 
   async getAllPathsInBucket(bucketName: string): Promise<string[]> {
     const params = {
       Bucket: bucketName,
-      Delimiter: '/',
     };
     const data = await s3.send(new ListObjectsV2Command(params));
     return data.CommonPrefixes?.map((prefix) => prefix.Prefix) || [];
