@@ -20,8 +20,13 @@ export const MongoHelper = {
     return this.client.db().collection(name);
   },
 
-  map: (collection: any): any => {
-    const { _id, ...collectionWithoutId } = collection;
-    return Object.assign({}, collectionWithoutId, { id: _id.toHexString() });
+  map: (document: any): any => {
+    if (!document) return null;
+    const { _id, ...documentWithoutId } = document;
+    if (!_id) throw new Error('Document is missing _id');
+    return {
+      ...documentWithoutId,
+      id: _id.toHexString(),
+    };
   },
 };
