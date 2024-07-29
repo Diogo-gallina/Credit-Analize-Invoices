@@ -21,7 +21,7 @@ export class UploadInvoiceUseCase {
     }
 
     const fullFilePath = `${userPath}${fileName}`;
-    const imageUrl = await this.storageAdapter.uploadFile(BUCKET_NAME, fullFilePath, fileContent);
-    return imageUrl;
+    await this.storageAdapter.uploadFile(BUCKET_NAME, fullFilePath, fileContent);
+    return `https://${BUCKET_NAME}.s3.amazonaws.com/${encodeURIComponent(userEmail)}/${fileName}`;
   }
 }
