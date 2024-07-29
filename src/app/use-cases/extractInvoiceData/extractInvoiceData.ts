@@ -10,7 +10,7 @@ export interface ExtractedInvoiceData {
   paymentAmount: number;
 }
 
-const BUCKET_NAME = 'invoice-files';
+const BUCKET_NAME = 'credit-analyze-invoice-files';
 
 export class ExtractInvoiceDataUseCase {
   constructor(private readonly ocrExtractorAdapter: IOcrAdapter) {
