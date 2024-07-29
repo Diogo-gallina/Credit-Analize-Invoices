@@ -4,6 +4,7 @@ import { Controller, HttpRequest, HttpResponse } from '@presentation/protocols';
 export const routeAdapter = (controller: Controller) => async (req: Request, res: Response) => {
   const httpRequest: HttpRequest = {
     body: req.body,
+    file: req.file,
   };
   const httpResponse: HttpResponse = await controller.handle(httpRequest);
   if (httpResponse.statusCode === 200) {
