@@ -1,3 +1,4 @@
 export * from './invalidTypeError';
 export * from './notFoundKeyError';
-export * from './invalidTypeError';
+export * from './missingParamError';
+export * from './parseDataError';
