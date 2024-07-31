@@ -35,7 +35,7 @@
     "no-unused-vars": "off",
     "no-await-in-loop": "off",
     "no-empty-function": "off",
-    "@typescript-eslint/no-use-before-define": ["error"],
+    "@typescript-eslint/no-use-before-define": "off",
     "import/extensions": [
       "error",
       "ignorePackages",
