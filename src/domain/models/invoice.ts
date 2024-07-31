@@ -5,4 +5,5 @@ export class InvoiceModel {
   document: string;
   paymentDate: Date;
   paymentAmount: number;
+  createdAt: Date;
 }

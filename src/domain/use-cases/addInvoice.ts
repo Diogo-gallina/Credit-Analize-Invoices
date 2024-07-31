@@ -6,6 +6,7 @@ export interface AddInvoiceModel {
   document: string;
   paymentDate: Date;
   paymentAmount: number;
+  createdAt: Date;
 }
 
 export interface AddInvoice {

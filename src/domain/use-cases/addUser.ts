@@ -4,6 +4,7 @@ export interface AddUserModel {
   name: string;
   document: string;
   email: string;
+  createdAt: Date;
 }
 
 export interface AddUser {

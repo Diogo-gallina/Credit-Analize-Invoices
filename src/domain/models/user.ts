@@ -3,4 +3,5 @@ export class UserModel {
   name: string;
   document: string;
   email: string;
+  createdAt: Date;
 }
