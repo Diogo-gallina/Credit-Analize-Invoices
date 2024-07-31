@@ -1,3 +1,4 @@
+import { MissingParamError } from '@app/errors';
 import { ExtractInvoiceDataUseCase } from '@app/use-cases/extractInvoiceData/extractInvoiceData';
 import { SendInvoiceToQueueUseCase } from '@app/use-cases/sendInvoiceToQueue/sendInvoiceToQueue';
 import { UploadInvoiceUseCase } from '@app/use-cases/uploadInvoiceFile/uploadInvoiceFile';
@@ -23,20 +24,23 @@ export class InvoiceController implements Controller {
   }
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      console.log({ httpRequest });
       const invoiceRequestBody: UploadInvoiceDto = httpRequest.body;
-      console.log({ invoiceRequestBody });
-      const { name, email, document, invoiceFile } = invoiceRequestBody!;
+      const invoiceFile = httpRequest.file;
+      const { name, email, document } = invoiceRequestBody!;
       if (!name || !email || !document || !invoiceFile) {
-        return badRequest(new Error('Missing required fields'));
+        return badRequest(new MissingParamError('Missing required fields'));
       }
-      const user = await this.dbAddUser.add({ name, document, email });
-      const fileName = `Invoice-${Date.now()}`;
-      await this.uploadInvoiceUseCase.execute(invoiceFile, user.email, fileName);
-      const invoiceData = await this.extractInvoiceData.execute(fileName);
-      const invoice = await this.dbAddInvoice.add({ ...invoiceData, userId: user.id });
+      const user = await this.dbAddUser.add({ name, document, email, createdAt: new Date() });
+      const fileName = `${Date.now()}_${invoiceFile.originalname}`;
+      const url = await this.uploadInvoiceUseCase.execute(invoiceFile, email, fileName);
+      const fullFilePath = `${email}/${fileName}`;
+      const invoiceData = await this.extractInvoiceData.execute(fullFilePath);
+      const invoice = await this.dbAddInvoice.add({ ...invoiceData, userId: user.id, createdAt: new Date() });
       await this.sendInvoiceToQueueUseCase.execute({ invoice, user });
-      return ok('Send Message');
+      return ok({
+        message: 'Send file to analyze sucessfully',
+        s3FileUrl: url,
+      });
     } catch (error) {
       return badRequest(error);
     }
