@@ -1,4 +1,4 @@
-import { ConsumesAnalyzedResultsUseCase } from '@app/use-cases/consumes-analyzed-results/consumesAnalyzedResults';
+import { ConsumesAnalyzedResultsUseCase } from '@app/use-cases/consumesAnalyzedResults/consumesAnalyzedResults';
 import { DbAddAnalizedResult } from '@data/use-cases/add-analyze-result/dbAddAnalyzeResult';
 import { MessagingAdapter } from '@infra/cloud/adapters/messaging/messagingAdapter';
 import { sqsHelper } from '@infra/cloud/aws/helpers/messaging/sqsHelper';
