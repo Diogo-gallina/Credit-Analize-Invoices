@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
-import { Request, Response, NextFunction } from 'express';
+import { AuthenticatedRequest } from '@app/adapters/expressRoutesAdapter';
+import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 const COGNITO_PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
@@ -12,20 +13,17 @@ fNhCBGt4lHT0jgv4vtPaRiTNPZ4wjrCQSPTMafEk5l6mJ783ypPDMeI6CsFho3el
 wwIDAQAB
 -----END PUBLIC KEY-----`;
 
-interface AuthenticatedRequest extends Request {
-  user?: any;
-}
-
 export const authenticateJWT = (req: AuthenticatedRequest, res: Response, next: NextFunction): Response<any> | void => {
   const authHeader = req.headers.authorization;
 
   if (authHeader) {
     const token = authHeader.split(' ')[1];
-
+    console.log(token);
     jwt.verify(token, COGNITO_PUBLIC_KEY, (err, user) => {
       if (err) return res.sendStatus(403);
 
       req.user = user;
+      console.log(req.user);
       next();
     });
   } else {
