@@ -36,6 +36,7 @@
     "no-await-in-loop": "off",
     "no-empty-function": "off",
     "@typescript-eslint/no-use-before-define": "off",
+    "no-use-before-define": "off",
     "import/extensions": [
       "error",
       "ignorePackages",
