@@ -1,9 +1,9 @@
-import { UserRepository } from '@data/protocols/userRepository';
+import { IUserRepository } from '@data/protocols/userRepository';
 import { UserModel } from '@domain/models/user';
 import { AddUserModel } from '@domain/use-cases/addUser';
 import { MongoHelper } from '../helpers/mongoHelper';
 
-export class UserMongoRepository implements UserRepository {
+export class UserMongoRepository implements IUserRepository {
   async findOneByEmail(email: string): Promise<UserModel | null> {
     const userCollection = await MongoHelper.getCollection('users');
     if (!userCollection) throw new Error('Failed to get collection');
