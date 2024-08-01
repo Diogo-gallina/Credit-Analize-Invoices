@@ -27,7 +27,7 @@ export const sqsHelper: IMessagingHelper = {
     try {
       const queueUrl = getQueueUrl(queueName);
       const messages = await receiveMessages(queueUrl);
-      return await processMessages<T>(messages, queueUrl);
+      return processMessages<T>(messages, queueUrl);
     } catch (error) {
       console.error('Error receiving or processing messages:', error);
       return [];
