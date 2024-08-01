@@ -1,9 +1,9 @@
-import { UserRepository } from '@data/protocols/userRepository';
+import { IUserRepository } from '@data/protocols/userRepository';
 import { UserModel } from '@domain/models/user';
 import { AddUser, AddUserModel } from '@domain/use-cases/addUser';
 
 export class DbAddUser implements AddUser {
-  constructor(private readonly userRepository: UserRepository) {
+  constructor(private readonly userRepository: IUserRepository) {
     this.userRepository = userRepository;
   }
   async add(userData: AddUserModel): Promise<UserModel> {

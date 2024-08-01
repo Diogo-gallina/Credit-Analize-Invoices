@@ -1,15 +1,15 @@
 import { AddInvoice, AddInvoiceModel } from '@domain/use-cases/addInvoice';
 import { InvoiceModel } from '@domain/models/invoice';
-import { AddInvoiceRepository } from '@data/protocols/addInvoiceRepository';
+import { IInvoiceRepository } from '@data/protocols/invoiceRepository';
 
 export class DbAddInvoice implements AddInvoice {
-  constructor(private readonly addInvoiceRepository: AddInvoiceRepository) {
-    this.addInvoiceRepository = addInvoiceRepository;
+  constructor(private readonly invoiceRepository: IInvoiceRepository) {
+    this.invoiceRepository = invoiceRepository;
   }
 
   async add(invoiceData: AddInvoiceModel): Promise<InvoiceModel> {
     invoiceData.createdAt = new Date();
-    const invoice = await this.addInvoiceRepository.add(invoiceData);
+    const invoice = await this.invoiceRepository.add(invoiceData);
     return new Promise<InvoiceModel>((resolve) => resolve(invoice));
   }
 }
