@@ -8,7 +8,6 @@ export class DbAddAnalizedResult implements AddAnalyzedResult {
   }
 
   async add(AnalyzedResultData: AddAnalyzedResultModel): Promise<AnalyzedResultModel> {
-    AnalyzedResultData.createdAt = new Date();
     const analyzedResultRepository = await this.analyzedResultRepository.add(AnalyzedResultData);
     return new Promise<AnalyzedResultModel>((resolve) => resolve(analyzedResultRepository));
   }

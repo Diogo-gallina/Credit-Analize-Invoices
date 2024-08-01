@@ -8,7 +8,6 @@ export class DbAddInvoice implements AddInvoice {
   }
 
   async add(invoiceData: AddInvoiceModel): Promise<InvoiceModel> {
-    invoiceData.createdAt = new Date();
     const invoice = await this.invoiceRepository.add(invoiceData);
     return new Promise<InvoiceModel>((resolve) => resolve(invoice));
   }
