@@ -1,10 +1,16 @@
 import { Request, Response } from 'express';
 import { Controller, HttpRequest, HttpResponse } from '@presentation/protocols';
 
-export const routeAdapter = (controller: Controller) => async (req: Request, res: Response) => {
+export interface AuthenticatedRequest extends Request {
+  user?: any;
+}
+
+export const routeAdapter = (controller: Controller) => async (req: AuthenticatedRequest, res: Response) => {
   const httpRequest: HttpRequest = {
     body: req.body,
     file: req.file,
+    params: req.params,
+    user: req.user,
   };
   const httpResponse: HttpResponse = await controller.handle(httpRequest);
   if (httpResponse.statusCode === 200) {

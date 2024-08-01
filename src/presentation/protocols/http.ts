@@ -6,4 +6,6 @@ export interface HttpResponse {
 export interface HttpRequest {
   body?: any;
   file?: any;
+  params?: any;
+  user?: any;
 }
