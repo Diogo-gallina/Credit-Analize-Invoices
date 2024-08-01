@@ -1,5 +1,6 @@
 import { InvoiceModel } from '@domain/models/invoice';
 import { UserModel } from '@domain/models/user';
+import { AnalyzedResultDto } from '@presentation/dtos/analyzedResultDto';
 
 export interface IDataForAnalysis {
   invoice: InvoiceModel;
@@ -8,5 +9,5 @@ export interface IDataForAnalysis {
 
 export interface IMessagingAdapter {
   sendInvoiceToQueue(message: IDataForAnalysis, queueName: string, messageGroupId: string): Promise<void>;
-  consumesAnalysisResult(): Promise<string>;
+  consumesAnalysisResult(queueName: string): Promise<AnalyzedResultDto[]>;
 }
