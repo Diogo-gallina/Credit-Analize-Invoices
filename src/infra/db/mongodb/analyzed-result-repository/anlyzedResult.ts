@@ -17,4 +17,11 @@ export class AnalyzedResultMongoRepository implements IAnalyzedResultRepository 
     const objectId = new ObjectId(analyzedResultId);
     return MongoHelper.map(await analyzedResultCollection.findOne({ _id: objectId }));
   }
+
+  async findAll(): Promise<AnalyzedResultModel[]> {
+    const analyzedResultCollection = await MongoHelper.getCollection('analyzedResults');
+    const documents = await analyzedResultCollection.find().toArray();
+    const filteredResults = documents.filter((document) => document._id);
+    return filteredResults.map((result) => MongoHelper.map(result));
+  }
 }
