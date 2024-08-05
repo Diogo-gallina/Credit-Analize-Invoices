@@ -8,5 +8,5 @@ export class AddAnalyzedResultModel {
 }
 
 export interface AddAnalyzedResult {
-  add(analyzedResultModel: AddAnalyzedResultModel): Promise<AnalyzedResultModel>;
+  add(analyzedResultData: AddAnalyzedResultModel): Promise<AnalyzedResultModel>;
 }

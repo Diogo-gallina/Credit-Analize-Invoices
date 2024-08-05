@@ -7,8 +7,8 @@ export class DbAddAnalizedResult implements AddAnalyzedResult {
     this.analyzedResultRepository = analyzedResultRepository;
   }
 
-  async add(AnalyzedResultData: AddAnalyzedResultModel): Promise<AnalyzedResultModel> {
-    const analyzedResultRepository = await this.analyzedResultRepository.add(AnalyzedResultData);
-    return new Promise<AnalyzedResultModel>((resolve) => resolve(analyzedResultRepository));
+  async add(analyzedResultData: AddAnalyzedResultModel): Promise<AnalyzedResultModel> {
+    const analyzedResult = await this.analyzedResultRepository.add(analyzedResultData);
+    return new Promise<AnalyzedResultModel>((resolve) => resolve(analyzedResult));
   }
 }
