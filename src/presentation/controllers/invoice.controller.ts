@@ -26,10 +26,12 @@ export class InvoiceController implements Controller {
     try {
       const invoiceRequestBody: UploadInvoiceDto = httpRequest.body;
       const invoiceFile = httpRequest.file;
-      const { name, email, document } = invoiceRequestBody!;
-      if (!name || !email || !document || !invoiceFile) {
-        return badRequest(new MissingParamError('Missing required fields'));
+      const requiredFields = ['name', 'email', 'document'];
+      for (const field of requiredFields) {
+        if (!invoiceRequestBody[field]) return badRequest(new MissingParamError(field));
+        if (!invoiceFile) return badRequest(new MissingParamError('file'));
       }
+      const { name, email, document } = invoiceRequestBody!;
       const user = await this.dbAddUser.add({ name, document, email, createdAt: new Date() });
       const fileName = `${Date.now()}_${invoiceFile.originalname}`;
       const url = await this.uploadInvoiceUseCase.execute(invoiceFile, email, fileName);
