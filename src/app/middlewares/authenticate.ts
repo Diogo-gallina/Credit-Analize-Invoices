@@ -18,12 +18,9 @@ export const authenticateJWT = (req: AuthenticatedRequest, res: Response, next: 
 
   if (authHeader) {
     const token = authHeader.split(' ')[1];
-    console.log(token);
     jwt.verify(token, COGNITO_PUBLIC_KEY, (err, user) => {
       if (err) return res.sendStatus(403);
-
       req.user = user;
-      console.log(req.user);
       next();
     });
   } else {
