@@ -21,44 +21,75 @@ export class ExtractInvoiceDataUseCase {
   async execute(fileName: string): Promise<ExtractedInvoiceData> {
     const analyzedData = await this.ocrExtractorAdapter.analyzeDocument(BUCKET_NAME, fileName);
     const keyValuePairs = await this.extractKeyValuePairs(analyzedData);
-    const issuerName = this.getKeyValue(
-      keyValuePairs,
-      /Emitente|NOME \/ RAZÃO SOCIAL|RAZÃO SOCIAL|NOME|NOMERAZÃO SOCIAL|Nome Razão Social|Nome\/Razão Social|Nome\/Razao Social|Nome \/ Razao Social|Nome\/Razao Social|Nome \/ Razao Social/i,
-    );
+
+    const issuerName = this.getKeyValue(keyValuePairs, [
+      'Emitente',
+      'NOME / RAZÃO SOCIAL',
+      'RAZÃO SOCIAL',
+      'NOME',
+      'NOMERAZÃO SOCIAL',
+      'Nome Razão Social',
+      'Nome/Razão Social',
+      'Nome/Razao Social',
+      'Nome / Razao Social',
+    ]);
     console.log({ issuerName });
 
-    const document = this.getKeyValue(
-      keyValuePairs,
-      /CNPJ\/CPF|CNPJ|CPF|CNPJ CPF|CPF\/CNPJ|CNPJ \/ CPF|Documento|Documento\/CPF|Documento\/CNPJ/i,
-    );
+    const document = this.getKeyValue(keyValuePairs, [
+      'CNPJ/CPF',
+      'CNPJ',
+      'CPF',
+      'CNPJ CPF',
+      'CPF/CNPJ',
+      'CNPJ / CPF',
+      'Documento',
+      'Documento/CPF',
+      'Documento/CNPJ',
+    ]);
     console.log({ document });
 
     const paymentDate = this.parseDate(
-      this.getKeyValue(
-        keyValuePairs,
-        /DATA EMISSÃO|DATA SAÍDA|Data de Autorização|Data de Emissão|DATA DA EMISSÃO|Data emissão|Data saida|Data Emissão|Data Saída|Data da Emissao|Data de Emissao/i,
-      ),
+      this.getKeyValue(keyValuePairs, [
+        'DATA EMISSÃO',
+        'DATA SAÍDA',
+        'Data de Autorização',
+        'Data de Emissão',
+        'DATA DA EMISSÃO',
+        'Data emissão',
+        'Data saida',
+        'Data Emissão',
+        'Data Saída',
+        'Data da Emissao',
+        'Data de Emissao',
+      ]),
     );
     console.log({ paymentDate });
 
     const paymentAmount = this.parseAmount(
-      this.getKeyValue(
-        keyValuePairs,
-        /VALOR TOTAL DA NOTA|VALOR TOTAL R\$|Total|VI Total|Valor total da nota|VALOR TOTAL|Valor Total|Valor Final|Total a Pagar/i,
-      ),
+      this.getKeyValue(keyValuePairs, [
+        'VALOR TOTAL DA NOTA',
+        'VALOR TOTAL R$',
+        'Total',
+        'VI Total',
+        'Valor total da nota',
+        'VALOR TOTAL',
+        'Valor Total',
+        'Valor Final',
+        'Total a Pagar',
+      ]),
     );
     console.log({ paymentAmount });
 
     return { issuerName, document, paymentDate, paymentAmount };
   }
 
-  private getKeyValue(keyValuePairs: Map<string, string>, keyPattern: RegExp): string {
+  private getKeyValue(keyValuePairs: Map<string, string>, possibleKeys: string[]): string {
     for (const [key, value] of keyValuePairs) {
-      if (keyPattern.test(key)) {
+      if (possibleKeys.includes(key.trim())) {
         return value;
       }
     }
-    throw new NotFoundKeyError(`Key matching pattern ${keyPattern} not found.`);
+    throw new NotFoundKeyError(`Key not found. Expected one of: ${possibleKeys.join(', ')}`);
   }
 
   private parseDate(dateStr: string): Date {
