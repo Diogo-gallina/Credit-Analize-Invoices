@@ -55,6 +55,7 @@ export class ExtractInvoiceDataUseCase {
         'VALOR TOTAL R$',
         'Total',
         'VI Total',
+        'V.TOTAL',
         'Valor total da nota',
         'VALOR TOTAL',
         'Valor Total',
@@ -106,14 +107,12 @@ export class ExtractInvoiceDataUseCase {
 
   private findValidDate(possibleDates: string[]): Date {
     const currentDate = new Date();
-    const oneYearInMs = 365 * 24 * 60 * 60 * 1000;
-
-    console.log({ possibleDates });
+    const tenYearsInMs = 10 * 365 * 24 * 60 * 60 * 1000;
 
     for (const dateStr of possibleDates) {
       if (dateStr.trim() === '') continue;
       const date = this.parseDate(dateStr);
-      if (date && Math.abs(currentDate.getTime() - date.getTime()) <= oneYearInMs) return date;
+      if (date && Math.abs(currentDate.getTime() - date.getTime()) <= tenYearsInMs) return date;
     }
 
     throw new ParseDataError(
@@ -122,7 +121,23 @@ export class ExtractInvoiceDataUseCase {
   }
 
   private parseDate(dateStr: string): Date | null {
-    const dateFormats = ['yyyy-MM-dd', 'dd/MM/yyyy', 'dd-MM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy'];
+    const dateFormats = [
+      'yyyy-MM-dd',
+      'yyyy/MM/dd',
+      'yyyy-MM-dd HH:mm',
+      'yyyy/MM/dd HH:mm',
+      'yyyy-MM-dd HH:mm:ss',
+      'yyyy/MM/dd HH:mm:ss',
+      'dd/MM/yyyy',
+      'dd-MM-yyyy',
+      'dd.MM.yyyy',
+      'dd/MM/yyyy HH:mm',
+      'dd-MM-yyyy HH:mm',
+      'dd.MM.yyyy HH:mm',
+      'dd/MM/yyyy HH:mm:ss',
+      'dd-MM-yyyy HH:mm:ss',
+      'dd.MM.yyyy HH:mm:ss',
+    ];
 
     for (const format of dateFormats) {
       const date = parse(dateStr, format, new Date());
