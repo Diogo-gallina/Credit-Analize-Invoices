@@ -1,4 +1,4 @@
-import { IMessagingHelper } from '@infra/cloud/aws/protocols/messagingHelperInterface';
+import { IMessagingHelper } from '@infra/cloud/lib/protocols/messagingHelperInterface';
 import { IDataForAnalysis, IMessagingAdapter } from '@infra/cloud/adapters/protocols/messagingAdapterInterface';
 import { AnalyzedResultDto } from '@presentation/dtos/analyzedResultDto';
 
