@@ -1,5 +1,5 @@
 import { TextractClient, AnalyzeDocumentCommand, AnalyzeDocumentResponse, FeatureType } from '@aws-sdk/client-textract';
-import { IOcrHelper } from '@infra/cloud/aws/protocols/orcHelperInterface';
+import { IOcrHelper } from '@infra/cloud/lib/protocols/orcHelperInterface';
 import { awsConfig } from '../../config/awsConfig';
 
 const textractClient = new TextractClient(awsConfig);

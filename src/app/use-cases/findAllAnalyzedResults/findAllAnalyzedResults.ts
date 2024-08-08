@@ -17,13 +17,10 @@ export class FindAllAnalyzedResultsUseCase {
     const user = await this.userRepository.findOneByEmail(userEmail);
     const analyzedResultsAlloweds: AnalyzedResultModel[] = [];
 
-    console.log('USER: ', { user });
-
     analyzedResults.forEach((analyzedResult) => {
       if (analyzedResult.userId === user.id) analyzedResultsAlloweds.push(analyzedResult);
     });
 
-    console.log(analyzedResultsAlloweds.length);
     if (analyzedResultsAlloweds.length === 0) throw new NotFoundError('Dont found results');
 
     return analyzedResultsAlloweds;

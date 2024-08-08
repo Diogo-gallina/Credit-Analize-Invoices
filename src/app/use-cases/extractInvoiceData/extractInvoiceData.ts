@@ -3,6 +3,7 @@
 import { IOcrAdapter } from '@infra/cloud/adapters/protocols/orcAdapterInterface';
 import { AnalyzeDocumentResponse, Block } from '@aws-sdk/client-textract';
 import { ParseDataError, NotFoundKeyError } from '@app/errors';
+import { parse, isValid } from 'date-fns';
 
 export interface ExtractedInvoiceData {
   issuerName: string;
@@ -21,77 +22,138 @@ export class ExtractInvoiceDataUseCase {
   async execute(fileName: string): Promise<ExtractedInvoiceData> {
     const analyzedData = await this.ocrExtractorAdapter.analyzeDocument(BUCKET_NAME, fileName);
     const keyValuePairs = await this.extractKeyValuePairs(analyzedData);
-    const issuerName = this.getKeyValue(
-      keyValuePairs,
-      /Emitente|NOME \/ RAZÃO SOCIAL|RAZÃO SOCIAL|NOME|NOMERAZÃO SOCIAL|Nome Razão Social|Nome\/Razão Social|Nome\/Razao Social|Nome \/ Razao Social|Nome\/Razao Social|Nome \/ Razao Social/i,
-    );
+
+    const issuerName = this.getKeyValue(keyValuePairs, [
+      'Emitente',
+      'NOME / RAZÃO SOCIAL',
+      'RAZÃO SOCIAL',
+      'NOME',
+      'NOMERAZÃO SOCIAL',
+      'Nome Razão Social',
+      'Nome/Razão Social',
+      'Nome/Razao Social',
+      'Nome / Razao Social',
+    ]);
     console.log({ issuerName });
 
-    const document = this.getKeyValue(
-      keyValuePairs,
-      /CNPJ\/CPF|CNPJ|CPF|CNPJ CPF|CPF\/CNPJ|CNPJ \/ CPF|Documento|Documento\/CPF|Documento\/CNPJ/i,
-    );
+    const document = this.getKeyValue(keyValuePairs, [
+      'CNPJ/CPF',
+      'CNPJ',
+      'CPF',
+      'CNPJ CPF',
+      'CPF/CNPJ',
+      'CNPJ / CPF',
+      'Documento',
+      'Documento/CPF',
+      'Documento/CNPJ',
+    ]);
     console.log({ document });
 
-    const paymentDate = this.parseDate(
-      this.getKeyValue(
-        keyValuePairs,
-        /DATA EMISSÃO|DATA SAÍDA|Data de Autorização|Data de Emissão|DATA DA EMISSÃO|Data emissão|Data saida|Data Emissão|Data Saída|Data da Emissao|Data de Emissao/i,
-      ),
-    );
-    console.log({ paymentDate });
-
     const paymentAmount = this.parseAmount(
-      this.getKeyValue(
-        keyValuePairs,
-        /VALOR TOTAL DA NOTA|VALOR TOTAL R\$|Total|VI Total|Valor total da nota|VALOR TOTAL|Valor Total|Valor Final|Total a Pagar/i,
-      ),
+      this.getKeyValue(keyValuePairs, [
+        'VALOR TOTAL DA NOTA',
+        'VALOR TOTAL R$',
+        'Total',
+        'VI Total',
+        'V.TOTAL',
+        'Valor total da nota',
+        'VALOR TOTAL',
+        'Valor Total',
+        'Valor Final',
+        'Total a Pagar',
+        'VLR. TOT',
+      ]),
     );
     console.log({ paymentAmount });
+
+    const paymentDate = this.findValidDate(
+      this.getAllKeyValues(keyValuePairs, [
+        'Data emissão',
+        'Data emissao',
+        'DATA SAÍDA',
+        'Data de Autorização',
+        'Data de Emissão',
+        'DATA DA EMISSÃO',
+        'Data saida',
+        'Data Saída',
+        'Data da Emissao',
+        'Data de Emissao',
+      ]),
+    );
+    console.log({ paymentDate });
 
     return { issuerName, document, paymentDate, paymentAmount };
   }
 
-  private getKeyValue(keyValuePairs: Map<string, string>, keyPattern: RegExp): string {
+  private getKeyValue(keyValuePairs: Map<string, string>, possibleKeys: string[]): string {
+    const normalizedKeys = possibleKeys.map((key) => key.toLowerCase());
+
     for (const [key, value] of keyValuePairs) {
-      if (keyPattern.test(key)) {
-        return value;
-      }
+      if (normalizedKeys.includes(key.toLowerCase().trim())) return value;
     }
-    throw new NotFoundKeyError(`Key matching pattern ${keyPattern} not found.`);
+    throw new NotFoundKeyError(`Key not found. Expected one of: ${possibleKeys.join(', ')}`);
   }
 
-  private parseDate(dateStr: string): Date {
-    const dateFormats = ['yyyy-MM-dd', 'dd/MM/yyyy', 'dd-MM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy'];
+  private getAllKeyValues(keyValuePairs: Map<string, string>, possibleKeys: string[]): string[] {
+    const normalizedKeys = possibleKeys.map((key) => key.toLowerCase());
+    const foundValues: string[] = [];
+
+    for (const [key, value] of keyValuePairs) {
+      if (normalizedKeys.includes(key.toLowerCase().trim())) foundValues.push(value);
+    }
+
+    return foundValues;
+  }
+
+  private findValidDate(possibleDates: string[]): Date {
+    const currentDate = new Date();
+    const tenYearsInMs = 10 * 365 * 24 * 60 * 60 * 1000;
+
+    for (const dateStr of possibleDates) {
+      if (dateStr.trim() === '') continue;
+      const date = this.parseDate(dateStr);
+      if (date && Math.abs(currentDate.getTime() - date.getTime()) <= tenYearsInMs) return date;
+    }
+
+    throw new ParseDataError(
+      `No valid date found within one year of the current date from the provided values: ${possibleDates.join(', ')}`,
+    );
+  }
+
+  private parseDate(dateStr: string): Date | null {
+    const dateFormats = [
+      'yyyy-MM-dd',
+      'yyyy/MM/dd',
+      'yyyy-MM-dd HH:mm',
+      'yyyy/MM/dd HH:mm',
+      'yyyy-MM-dd HH:mm:ss',
+      'yyyy/MM/dd HH:mm:ss',
+      'dd/MM/yyyy',
+      'dd-MM-yyyy',
+      'dd.MM.yyyy',
+      'dd/MM/yyyy HH:mm',
+      'dd-MM-yyyy HH:mm',
+      'dd.MM.yyyy HH:mm',
+      'dd/MM/yyyy HH:mm:ss',
+      'dd-MM-yyyy HH:mm:ss',
+      'dd.MM.yyyy HH:mm:ss',
+    ];
 
     for (const format of dateFormats) {
-      const date = this.parseDateFormat(dateStr, format);
-      if (date) {
-        return date;
-      }
+      const date = parse(dateStr, format, new Date());
+      if (isValid(date)) return date;
     }
 
     throw new ParseDataError(`Invalid date: ${dateStr}`);
   }
 
-  private parseDateFormat(dateStr: string, format: string): Date | null {
-    const parts = dateStr.match(/(\d+)/g);
-    if (!parts) return null;
-
-    const [year, month, day] =
-      format === 'yyyy-MM-dd' || format === 'yyyy/MM/dd'
-        ? [parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])]
-        : [parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])];
-
-    const date = new Date(year, month, day);
-    return isNaN(date.getTime()) ? null : date;
-  }
-
   private parseAmount(amountStr: string): number {
-    const amount = parseFloat(amountStr.replace(/[^\d.-]/g, ''));
-    if (!isNaN(amount)) {
-      return amount;
-    }
+    const sanitizedStr = amountStr.replace(/[^\d,.-]/g, '');
+    const normalizedStr = sanitizedStr.replace(',', '.');
+    const amount = parseFloat(normalizedStr);
+
+    if (!isNaN(amount)) return amount;
+
     throw new ParseDataError(`Invalid amount: ${amountStr}`);
   }
 
@@ -105,11 +167,8 @@ export class ExtractInvoiceDataUseCase {
       blockMap.set(blockId, block);
 
       if (block.BlockType === 'KEY_VALUE_SET') {
-        if (block.EntityTypes?.includes('KEY')) {
-          keyMap.set(blockId, block);
-        } else {
-          valueMap.set(blockId, block);
-        }
+        if (block.EntityTypes?.includes('KEY')) keyMap.set(blockId, block);
+        else valueMap.set(blockId, block);
       }
     }
 
@@ -158,9 +217,7 @@ export class ExtractInvoiceDataUseCase {
       if (relationship.Type === 'CHILD') {
         for (const id of relationship.Ids || []) {
           const childBlock = blockMap.get(id);
-          if (childBlock && childBlock.BlockType === 'WORD') {
-            text += `${childBlock.Text} `;
-          }
+          if (childBlock && childBlock.BlockType === 'WORD') text += `${childBlock.Text} `;
         }
       }
     }

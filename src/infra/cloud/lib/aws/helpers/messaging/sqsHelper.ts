@@ -6,7 +6,7 @@ import {
   SQSClient,
 } from '@aws-sdk/client-sqs';
 import { awsConfig } from '../../config/awsConfig';
-import { IMessagingHelper } from '../../protocols/messagingHelperInterface';
+import { IMessagingHelper } from '../../../protocols/messagingHelperInterface';
 import { FailedSendMessageError } from '../../errors/FailedSendMessageError';
 
 const client = new SQSClient(awsConfig);

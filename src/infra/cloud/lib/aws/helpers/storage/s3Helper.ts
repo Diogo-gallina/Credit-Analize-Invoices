@@ -1,5 +1,5 @@
 import { S3Client, PutObjectCommand, ListObjectsV2Command, GetObjectCommand } from '@aws-sdk/client-s3';
-import { IStorageHelper } from '../../protocols/storageHelperInterface';
+import { IStorageHelper } from '../../../protocols/storageHelperInterface';
 import { awsConfig } from '../../config/awsConfig';
 
 const s3 = new S3Client(awsConfig);
