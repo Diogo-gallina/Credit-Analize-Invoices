@@ -3,7 +3,7 @@
     "clean": "rimraf dist",
     "build": "npm run clean && tsc && tsc-alias -p tsconfig.json",
     "dev": "ts-node-dev -r tsconfig-paths/register src/app/server.ts",
-    "start": "sucrase-node dist/app/server.js",
+    "start": "node -r sucrase/register -r tsconfig-paths/register dist/app/server.js",
     "test": "jest --runInBand --detectOpenHandles",
     "test:watch": "jest --watch --passWithNoTests --runInBand --coverage=false"
   },
