@@ -1,4 +1,4 @@
-import { routeAdapter } from '@app/adapters/expressRoutesAdapter';
+import { routeAdapter } from '@infra/framework-requester/adapters/expressRoutesAdapter';
 import { makeInvoiceController } from '@app/factories/addInvoice';
 import { makeInvoiceHistoryController } from '@app/factories/invoiceHistory';
 import { upload } from '@app/middlewares';
