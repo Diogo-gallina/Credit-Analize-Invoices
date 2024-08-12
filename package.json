@@ -1,8 +1,9 @@
 {
   "scripts": {
-    "build": "tsc && tsc-alias",
+    "clean": "rimraf dist",
+    "build": "npm run clean && tsc && tsc-alias -p tsconfig.json",
     "dev": "ts-node-dev -r tsconfig-paths/register src/app/server.ts",
-    "start": "node -r tsconfig-paths/register dist/app/server.js",
+    "start": "sucrase-node dist/app/server.js",
     "test": "jest --runInBand --detectOpenHandles",
     "test:watch": "jest --watch --passWithNoTests --runInBand --coverage=false"
   },
