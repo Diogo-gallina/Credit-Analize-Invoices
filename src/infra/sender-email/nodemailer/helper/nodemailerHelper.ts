@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { IEmailHelper } from '../../../protocols/emailHelperInterface';
+import { IEmailHelper } from '../protocols/emailHelperInterface';
 
 const SENDER_EMAIL = 'credit.analyze20@gmail.com';
 
