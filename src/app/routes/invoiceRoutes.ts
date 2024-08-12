@@ -1,8 +1,8 @@
-import { routeAdapter } from '@infra/framework-requester/adapters/expressRoutesAdapter';
 import { makeInvoiceController } from '@app/factories/addInvoice';
 import { makeInvoiceHistoryController } from '@app/factories/invoiceHistory';
 import { upload } from '@app/middlewares';
 import { authenticateJWT } from '@app/middlewares/authenticate';
+import { routeAdapter } from '@infra/web-framework/adapters/expressRoutesAdapter';
 import { Router } from 'express';
 
 export default (router: Router): void => {

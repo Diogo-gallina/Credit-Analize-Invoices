@@ -1,5 +1,5 @@
 /* eslint-disable consistent-return */
-import { AuthenticatedRequest } from '@infra/framework-requester/adapters/expressRoutesAdapter';
+import { AuthenticatedRequest } from '@infra/web-framework/adapters/expressRoutesAdapter';
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
