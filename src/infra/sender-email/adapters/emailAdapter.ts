@@ -1,5 +1,5 @@
-import { IEmailHelper } from '@infra/cloud/lib/protocols/emailHelperInterface';
-import { IEmailAdapter } from '../protocols/emailAdapterInterface';
+import { IEmailHelper } from '@infra/sender-email/nodemailer/protocols/emailHelperInterface';
+import { IEmailAdapter } from './protocols/emailAdapterInterface';
 
 export class EmailAdapter implements IEmailAdapter {
   constructor(private readonly emailHelper: IEmailHelper) {

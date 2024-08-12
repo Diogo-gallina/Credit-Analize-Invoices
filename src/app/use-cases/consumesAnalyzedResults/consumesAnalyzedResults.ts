@@ -3,7 +3,7 @@ import path from 'path';
 import { IInvoiceRepository } from '@data/protocols/invoiceRepository';
 import { IUserRepository } from '@data/protocols/userRepository';
 import { DbAddAnalizedResult } from '@data/use-cases/add-analyze-result/dbAddAnalyzeResult';
-import { IEmailAdapter } from '@infra/cloud/adapters/protocols/emailAdapterInterface';
+import { IEmailAdapter } from '@infra/sender-email/adapters/protocols/emailAdapterInterface';
 import { IMessagingAdapter } from '@infra/cloud/adapters/protocols/messagingAdapterInterface';
 
 const CONSUME_QUEUE_NAME = 'invoice-validation-result.fifo';
