@@ -62,4 +62,29 @@ describe('Upload Invoice UseCase', () => {
     expect(getAllPathsInBucketSpy).toHaveBeenCalledTimes(1);
     expect(getAllPathsInBucketSpy).toHaveBeenCalledWith(bucketName);
   });
+
+  it('should call createPathInBucket with correct param if userPath does not exists', async () => {
+    const { sut, storageAdapterStub } = makeSut();
+    const createPathInBucketSpy = jest.spyOn(storageAdapterStub, 'createPathInBucket');
+    const bucketName = 'credit-analyze-invoice-files';
+    const userEmail = 'user@example.com';
+    const fileName = 'any_file_name';
+    const userPath = `${userEmail}/`;
+    const file = makeFakeFile();
+    await sut.execute(file, userEmail, fileName);
+    expect(createPathInBucketSpy).toHaveBeenCalledTimes(1);
+    expect(createPathInBucketSpy).toHaveBeenCalledWith(bucketName, userPath);
+  });
+
+  it('should not call createPathInBucket if userPath exists', async () => {
+    const { sut, storageAdapterStub } = makeSut();
+    const userPath = 'user@example.com/';
+    jest.spyOn(storageAdapterStub, 'getAllPathsInBucket').mockResolvedValue([userPath, 'any_path']);
+    const createPathInBucketSpy = jest.spyOn(storageAdapterStub, 'createPathInBucket');
+    const userEmail = 'user@example.com';
+    const fileName = 'any_file_name';
+    const file = makeFakeFile();
+    await sut.execute(file, userEmail, fileName);
+    expect(createPathInBucketSpy).not.toHaveBeenCalled();
+  });
 });
