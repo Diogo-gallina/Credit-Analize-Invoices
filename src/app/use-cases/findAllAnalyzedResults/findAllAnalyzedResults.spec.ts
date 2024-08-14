@@ -34,7 +34,7 @@ const makeFakeArrayAnalyzedResult = (): AnalyzedResultModel[] => [
   makeFakeAnalyzedResult(),
   {
     id: 'any_analyzed_id_2',
-    userId: 'any_user_id_2',
+    userId: 'any_user_id',
     invoiceId: 'any_invoice_id_2',
     invoiveWasApproved: false,
     createdAt: new Date('2024-04-11'),
@@ -108,7 +108,7 @@ describe('Find AllAnalyzed Results Use Case', () => {
     expect(findOneByEmailSpy).toHaveBeenCalledWith(userEmail);
   });
 
-  it('should throws NotFoundError if analyzedResultsAlloweds length to equal 0', async () => {
+  it('should throws NotFoundError if analyzedResults length to equal 0', async () => {
     const { sut, analyzedResultRepositoryStub } = makeSut();
     jest.spyOn(analyzedResultRepositoryStub, 'findAll').mockResolvedValue([]);
     const userEmail = 'any_email';
@@ -116,9 +116,23 @@ describe('Find AllAnalyzed Results Use Case', () => {
     await expect(sut.execute(userEmail)).rejects.toThrow('Dont found results');
   });
 
-  it('should return a list of analyzedResults for allowed the user', async () => {
-    const { sut } = makeSut();
+  it('should throws NotFoundError if analyzedResults alloweds to user have length to equal 0', async () => {
+    const { sut, analyzedResultRepositoryStub } = makeSut();
     const analyzedResultsAlloweds = makeFakeArrayAnalyzedResult();
+    analyzedResultsAlloweds[0].userId = 'denied_user_id';
+    analyzedResultsAlloweds[1].userId = 'denied_user_id';
+    analyzedResultsAlloweds[2].userId = 'denied_user_id';
+    jest.spyOn(analyzedResultRepositoryStub, 'findAll').mockResolvedValue(analyzedResultsAlloweds);
+    const userEmail = 'any_email';
+    await expect(sut.execute(userEmail)).rejects.toBeInstanceOf(NotFoundError);
+    await expect(sut.execute(userEmail)).rejects.toThrow('Dont found results');
+  });
+
+  it('should return a list of analyzedResults for allowed the user', async () => {
+    const { sut, analyzedResultRepositoryStub } = makeSut();
+    const analyzedResultsAlloweds = makeFakeArrayAnalyzedResult();
+    analyzedResultsAlloweds[1].userId = 'denied_user_id';
+    jest.spyOn(analyzedResultRepositoryStub, 'findAll').mockResolvedValue(analyzedResultsAlloweds);
     const userEmail = 'any_email';
     const analyzedResults = await sut.execute(userEmail);
     expect(analyzedResults).toEqual([analyzedResultsAlloweds[0], analyzedResultsAlloweds[2]]);
