@@ -5,6 +5,7 @@ import { UserModel } from '@domain/models/user';
 import { AddUserModel } from '@domain/use-cases/addUser';
 import { AnalyzedResultModel } from '@domain/models/analyzedResult';
 import { AddAnalyzedResultModel } from '@domain/use-cases/addAnalyzedResult';
+import { NotFoundError } from '@app/errors/notFound';
 import { FindAllAnalyzedResultsUseCase } from './findAllAnalyzedResults';
 
 interface SutTypes {
@@ -105,6 +106,14 @@ describe('Find AllAnalyzed Results Use Case', () => {
     await sut.execute(userEmail);
     expect(findOneByEmailSpy).toHaveBeenCalledTimes(1);
     expect(findOneByEmailSpy).toHaveBeenCalledWith(userEmail);
+  });
+
+  it('should throws NotFoundError if analyzedResultsAlloweds length to equal 0', async () => {
+    const { sut, analyzedResultRepositoryStub } = makeSut();
+    jest.spyOn(analyzedResultRepositoryStub, 'findAll').mockResolvedValue([]);
+    const userEmail = 'any_email';
+    await expect(sut.execute(userEmail)).rejects.toBeInstanceOf(NotFoundError);
+    await expect(sut.execute(userEmail)).rejects.toThrow('Dont found results');
   });
 
   it('should return a list of analyzedResults for allowed the user', async () => {
