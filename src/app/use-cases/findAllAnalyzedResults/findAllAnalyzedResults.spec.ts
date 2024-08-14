@@ -89,4 +89,13 @@ describe('Find AllAnalyzed Results Use Case', () => {
     await sut.execute(userEmail);
     expect(findAllSpy).toHaveBeenCalledTimes(1);
   });
+
+  it('should call userRepository findOneByEmail with correct params', async () => {
+    const { sut, userRepositoryStub } = makeSut();
+    const findOneByEmailSpy = jest.spyOn(userRepositoryStub, 'findOneByEmail');
+    const userEmail = 'any_email';
+    await sut.execute(userEmail);
+    expect(findOneByEmailSpy).toHaveBeenCalledTimes(1);
+    expect(findOneByEmailSpy).toHaveBeenCalledWith(userEmail);
+  });
 });
