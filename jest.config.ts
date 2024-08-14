@@ -1,4 +1,6 @@
 import type { Config } from 'jest';
+import { pathsToModuleNameMapper } from 'ts-jest';
+import { compilerOptions } from './tsconfig.json';
 
 const config: Config = {
   roots: ['<rootDir>/src'],
@@ -12,6 +14,7 @@ const config: Config = {
   transform: {
     '.+\\.ts$': 'ts-jest',
   },
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
 };
 
 export default config;
