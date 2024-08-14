@@ -97,4 +97,28 @@ describe('Upload Invoice UseCase', () => {
     await expect(sut.execute(file, userEmail, fileName)).rejects.toBeInstanceOf(Error);
     await expect(sut.execute(file, userEmail, fileName)).rejects.toThrow('File content is missing or invalid');
   });
+
+  it('should call uploadFile with correct params', async () => {
+    const { sut, storageAdapterStub } = makeSut();
+    const uploadFileSpy = jest.spyOn(storageAdapterStub, 'uploadFile');
+    const bucketName = 'credit-analyze-invoice-files';
+    const userEmail = 'user@example.com';
+    const fileName = 'any_file_name';
+    const file = makeFakeFile();
+    const userPath = 'user@example.com/';
+    const fullFilePath = `${userPath}${fileName}`;
+    await sut.execute(file, userEmail, fileName);
+    expect(uploadFileSpy).toHaveBeenCalledTimes(1);
+    expect(uploadFileSpy).toHaveBeenCalledWith(bucketName, fullFilePath, file.buffer);
+  });
+
+  it('should return correct url if all params is correct', async () => {
+    const { sut } = makeSut();
+    const bucketName = 'credit-analyze-invoice-files';
+    const userEmail = 'user@example.com';
+    const fileName = 'any_file_name';
+    const file = makeFakeFile();
+    const result = await sut.execute(file, userEmail, fileName);
+    expect(result).toEqual(`https://${bucketName}.s3.amazonaws.com/${encodeURIComponent(userEmail)}/${fileName}`);
+  });
 });
