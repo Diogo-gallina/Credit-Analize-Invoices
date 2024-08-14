@@ -38,6 +38,14 @@ const makeFakeArrayAnalyzedResult = (): AnalyzedResultModel[] => [
     invoiveWasApproved: false,
     createdAt: new Date('2024-04-11'),
   },
+
+  {
+    id: 'any_analyzed_id_2',
+    userId: 'any_user_id',
+    invoiceId: 'any_invoice_id_2',
+    invoiveWasApproved: false,
+    createdAt: new Date('2024-04-11'),
+  },
 ];
 
 const makeUserRepository = (): IUserRepository => {
@@ -97,5 +105,13 @@ describe('Find AllAnalyzed Results Use Case', () => {
     await sut.execute(userEmail);
     expect(findOneByEmailSpy).toHaveBeenCalledTimes(1);
     expect(findOneByEmailSpy).toHaveBeenCalledWith(userEmail);
+  });
+
+  it('should return a list of analyzedResults for allowed the user', async () => {
+    const { sut } = makeSut();
+    const analyzedResultsAlloweds = makeFakeArrayAnalyzedResult();
+    const userEmail = 'any_email';
+    const analyzedResults = await sut.execute(userEmail);
+    expect(analyzedResults).toEqual([analyzedResultsAlloweds[0], analyzedResultsAlloweds[2]]);
   });
 });
