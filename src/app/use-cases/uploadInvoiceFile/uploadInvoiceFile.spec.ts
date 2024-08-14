@@ -87,4 +87,14 @@ describe('Upload Invoice UseCase', () => {
     await sut.execute(file, userEmail, fileName);
     expect(createPathInBucketSpy).not.toHaveBeenCalled();
   });
+
+  test('should trows Error if buffer file does not exist', async () => {
+    const { sut } = makeSut();
+    const file = makeFakeFile();
+    file.buffer = null;
+    const userEmail = 'user@example.com';
+    const fileName = 'any_file_name';
+    await expect(sut.execute(file, userEmail, fileName)).rejects.toBeInstanceOf(Error);
+    await expect(sut.execute(file, userEmail, fileName)).rejects.toThrow('File content is missing or invalid');
+  });
 });
