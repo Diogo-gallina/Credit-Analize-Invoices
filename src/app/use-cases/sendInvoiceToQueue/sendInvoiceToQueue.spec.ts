@@ -1,7 +1,7 @@
 import { IDataForAnalysis, IMessagingAdapter } from '@infra/cloud/adapters/protocols/messagingAdapterInterface';
-import { SendInvoiceToQueueUseCase } from './sendInvoiceToQueue';
 import { IMessagingHelper } from '@infra/cloud/lib/protocols/messagingHelperInterface';
 import { MessagingAdapter } from '@infra/cloud/adapters/messaging/messagingAdapter';
+import { SendInvoiceToQueueUseCase } from './sendInvoiceToQueue';
 
 const makeFakeMessage = (): IDataForAnalysis => ({
   invoice: {
@@ -23,6 +23,7 @@ const makeFakeMessage = (): IDataForAnalysis => ({
 });
 
 const makeMessagingHelper = (): IMessagingHelper => ({
+  // eslint-disable-next-line no-void
   sendMessageToQueue: jest.fn().mockResolvedValue(void 0),
   consumesMessage: jest.fn().mockResolvedValue([]),
 });
@@ -45,15 +46,11 @@ const makeSut = (): SutTypes => {
 describe('Send Invoice To Queue Use Case', () => {
   it('should call sendInvoiceToQueue method with correct params', async () => {
     const { sut, messagingAdapterStub } = makeSut();
-    const sendInvoiceToQueueSpy = jest.spyOn(messagingAdapterStub,'sendInvoiceToQueue');
+    const sendInvoiceToQueueSpy = jest.spyOn(messagingAdapterStub, 'sendInvoiceToQueue');
     const queueName = 'invoice-data-extracted.fifo';
     const messageGroupId = 'invoice-group';
     const message = makeFakeMessage();
     await sut.execute(message);
-    expect(sendInvoiceToQueueSpy).toHaveBeenCalledWith(
-      message,
-      queueName,
-      messageGroupId,
-    );
+    expect(sendInvoiceToQueueSpy).toHaveBeenCalledWith(message, queueName, messageGroupId);
   });
 });
