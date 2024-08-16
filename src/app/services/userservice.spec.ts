@@ -19,4 +19,13 @@ describe('UserService', () => {
 
     expect(email).toBe(expectedEmail);
   });
+
+  it('should return null when token does not contain email', () => {
+    const token = 'token_without_email';
+    (decode as jest.Mock).mockReturnValue({});
+
+    const email = UserService.getEmailFromToken(token);
+
+    expect(email).toBeNull();
+  });
 });
