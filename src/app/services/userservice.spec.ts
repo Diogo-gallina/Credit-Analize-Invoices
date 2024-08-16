@@ -28,4 +28,13 @@ describe('UserService', () => {
 
     expect(email).toBeNull();
   });
+
+  it('should return null when token is invalid or cannot be decoded', () => {
+    const token = 'invalid_token';
+    (decode as jest.Mock).mockReturnValue(null);
+
+    const email = UserService.getEmailFromToken(token);
+
+    expect(email).toBeNull();
+  });
 });
