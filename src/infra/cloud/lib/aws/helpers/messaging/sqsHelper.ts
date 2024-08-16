@@ -1,3 +1,4 @@
+import dotenv from 'dotenv';
 import {
   DeleteMessageCommand,
   ReceiveMessageCommand,
@@ -5,9 +6,12 @@ import {
   SendMessageCommandInput,
   SQSClient,
 } from '@aws-sdk/client-sqs';
+import { Consumer } from 'sqs-consumer';
 import { awsConfig } from '../../config/awsConfig';
 import { IMessagingHelper } from '../../../protocols/messagingHelperInterface';
 import { FailedSendMessageError } from '../../errors/FailedSendMessageError';
+
+dotenv.config();
 
 const client = new SQSClient(awsConfig);
 
@@ -24,14 +28,38 @@ export const sqsHelper: IMessagingHelper = {
   },
 
   async consumesMessage<T>(queueName: string): Promise<T[]> {
-    try {
-      const queueUrl = getQueueUrl(queueName);
-      const messages = await receiveMessages(queueUrl);
-      return processMessages<T>(messages, queueUrl);
-    } catch (error) {
-      console.error('Error receiving or processing messages:', error);
-      return [];
-    }
+    return new Promise((resolve, reject) => {
+      const queueUrl = `https://sqs.${awsConfig.region}.amazonaws.com/339712871292/${queueName}`;
+      const messages: T[] = [];
+
+      const consumer = Consumer.create({
+        queueUrl,
+        handleMessage: async (message) => {
+          if (message.Body) {
+            const parsedMessage: T = JSON.parse(message.Body);
+            messages.push(parsedMessage);
+          }
+        },
+        sqs: client,
+      });
+
+      consumer.on('error', (err) => {
+        console.error('Error receiving or processing messages:', err);
+        reject(err);
+      });
+
+      consumer.on('processing_error', (err) => {
+        console.error('Processing error:', err);
+        reject(err);
+      });
+
+      consumer.on('stopped', () => {
+        console.log('Consumer stopped, resolving with processed messages');
+        resolve(messages);
+      });
+
+      consumer.start();
+    });
   },
 };
 

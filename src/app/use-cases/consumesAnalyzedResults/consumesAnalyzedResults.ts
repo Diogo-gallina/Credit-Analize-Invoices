@@ -29,6 +29,7 @@ export class ConsumesAnalyzedResultsUseCase {
     for (const analyzedResult of analyzedResults) {
       try {
         const { userId, invoiceId, invoiveWasApproved } = analyzedResult;
+        console.log('chamou');
         await this.dbAddAnalyzedResult.add({ userId, invoiceId, invoiveWasApproved, createdAt: new Date() });
         const user = await this.userRepository.findOneById(userId);
         const invoice = await this.invoiceRespository.findOneById(invoiceId);
