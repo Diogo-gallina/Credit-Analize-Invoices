@@ -1,3 +1,7 @@
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 export const awsConfig = {
   region: process.env.AWS_REGION,
   credentials: {
