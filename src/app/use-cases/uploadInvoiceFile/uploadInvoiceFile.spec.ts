@@ -51,6 +51,12 @@ const makeSut = (): SutTypes => {
 };
 
 describe('Upload Invoice UseCase', () => {
+  it('should be defined', () => {
+    const { sut, storageAdapterStub } = makeSut();
+    expect(sut).toBeInstanceOf(UploadInvoiceUseCase);
+    expect(storageAdapterStub).toBeDefined();
+  });
+
   it('should call getAllPathsInBucket with correct param', async () => {
     const { sut, storageAdapterStub } = makeSut();
     const getAllPathsInBucketSpy = jest.spyOn(storageAdapterStub, 'getAllPathsInBucket');
