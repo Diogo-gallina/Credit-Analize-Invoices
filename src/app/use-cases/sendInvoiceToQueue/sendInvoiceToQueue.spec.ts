@@ -44,6 +44,12 @@ const makeSut = (): SutTypes => {
 };
 
 describe('Send Invoice To Queue Use Case', () => {
+  it('should be defined', () => {
+    const { sut, messagingAdapterStub } = makeSut();
+    expect(sut).toBeInstanceOf(SendInvoiceToQueueUseCase);
+    expect(messagingAdapterStub).toBeDefined();
+  });
+
   it('should call sendInvoiceToQueue method with correct params', async () => {
     const { sut, messagingAdapterStub } = makeSut();
     const sendInvoiceToQueueSpy = jest.spyOn(messagingAdapterStub, 'sendInvoiceToQueue');
