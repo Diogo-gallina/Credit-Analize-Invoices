@@ -91,6 +91,13 @@ const makeSut = (): SutTypes => {
 };
 
 describe('Find AllAnalyzed Results Use Case', () => {
+  it('should be defined', () => {
+    const { sut, analyzedResultRepositoryStub, userRepositoryStub } = makeSut();
+    expect(sut).toBeInstanceOf(FindAllAnalyzedResultsUseCase);
+    expect(analyzedResultRepositoryStub).toBeDefined();
+    expect(userRepositoryStub).toBeDefined();
+  });
+
   it('should call analyzedResultRepository findAll method', async () => {
     const { sut, analyzedResultRepositoryStub } = makeSut();
     const findAllSpy = jest.spyOn(analyzedResultRepositoryStub, 'findAll');
