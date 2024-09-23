@@ -115,7 +115,7 @@ describe('Find AllAnalyzed Results Use Case', () => {
     expect(findOneByEmailSpy).toHaveBeenCalledWith(userEmail);
   });
 
-  it('should throws NotFoundError if analyzedResults length to equal 0', async () => {
+  it('should throws NotFoundError if analyzed results alloweds length to equal 0', async () => {
     const { sut, analyzedResultRepositoryStub } = makeSut();
     jest.spyOn(analyzedResultRepositoryStub, 'findAll').mockResolvedValue([]);
     const userEmail = 'any_email';
@@ -123,7 +123,7 @@ describe('Find AllAnalyzed Results Use Case', () => {
     await expect(sut.execute(userEmail)).rejects.toThrow('Dont found results');
   });
 
-  it('should throws NotFoundError if analyzedResults alloweds to user have length to equal 0', async () => {
+  it('should throws NotFoundError if analyzed results alloweds to user have length to equal 0', async () => {
     const { sut, analyzedResultRepositoryStub } = makeSut();
     const analyzedResultsAlloweds = makeFakeArrayAnalyzedResult();
     analyzedResultsAlloweds[0].userId = 'denied_user_id';
@@ -135,7 +135,7 @@ describe('Find AllAnalyzed Results Use Case', () => {
     await expect(sut.execute(userEmail)).rejects.toThrow('Dont found results');
   });
 
-  it('should return a list of analyzedResults for allowed the user', async () => {
+  it('should return a list of analyzed results for allowed the user', async () => {
     const { sut, analyzedResultRepositoryStub } = makeSut();
     const analyzedResultsAlloweds = makeFakeArrayAnalyzedResult();
     analyzedResultsAlloweds[1].userId = 'denied_user_id';
