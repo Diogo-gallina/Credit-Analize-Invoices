@@ -5,8 +5,7 @@ import { IUserRepository } from '@data/protocols/userRepository';
 import { DbAddAnalizedResult } from '@data/use-cases/add-analyze-result/dbAddAnalyzeResult';
 import { IEmailAdapter } from '@infra/sender-email/adapters/protocols/emailAdapterInterface';
 import { IMessagingAdapter } from '@infra/cloud/adapters/protocols/messagingAdapterInterface';
-
-const CONSUME_QUEUE_NAME = 'invoice-validation-result.fifo';
+import { QUEUES } from '@app/utils/constants';
 
 export class ConsumesAnalyzedResultsUseCase {
   constructor(
@@ -24,7 +23,7 @@ export class ConsumesAnalyzedResultsUseCase {
   }
 
   async execute(): Promise<void> {
-    const analyzedResults = await this.messagingAdapter.consumesAnalysisResult(CONSUME_QUEUE_NAME);
+    const analyzedResults = await this.messagingAdapter.consumesAnalysisResult(QUEUES.INVOICE_VALIDATION_RESULT);
 
     for (const analyzedResult of analyzedResults) {
       try {

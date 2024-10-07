@@ -1,6 +1,6 @@
+import { QUEUES } from '@app/utils/constants';
 import { IDataForAnalysis, IMessagingAdapter } from '@infra/cloud/adapters/protocols/messagingAdapterInterface';
 
-const SEND_QUEUE_NAME = 'invoice-data-extracted.fifo';
 const MESSAGE_GROUP_ID = 'invoice-group';
 
 export class SendInvoiceToQueueUseCase {
@@ -9,6 +9,6 @@ export class SendInvoiceToQueueUseCase {
   }
 
   async execute(message: IDataForAnalysis) {
-    await this.messagingAdapter.sendInvoiceToQueue(message, SEND_QUEUE_NAME, MESSAGE_GROUP_ID);
+    await this.messagingAdapter.sendInvoiceToQueue(message, QUEUES.INVOICE_DATA_EXTRACTED, MESSAGE_GROUP_ID);
   }
 }
