@@ -1,6 +1,7 @@
 import { IDataForAnalysis, IMessagingAdapter } from '@infra/cloud/adapters/protocols/messagingAdapterInterface';
 import { IMessagingHelper } from '@infra/cloud/lib/protocols/messagingHelperInterface';
 import { MessagingAdapter } from '@infra/cloud/adapters/messaging/messagingAdapter';
+import { QUEUES } from '@app/utils/constants';
 import { SendInvoiceToQueueUseCase } from './sendInvoiceToQueue';
 
 const makeFakeMessage = (): IDataForAnalysis => ({
@@ -53,7 +54,7 @@ describe('Send Invoice To Queue Use Case', () => {
   it('should call sendInvoiceToQueue method with correct params', async () => {
     const { sut, messagingAdapterStub } = makeSut();
     const sendInvoiceToQueueSpy = jest.spyOn(messagingAdapterStub, 'sendInvoiceToQueue');
-    const queueName = 'invoice-data-extracted.fifo';
+    const queueName = QUEUES.INVOICE_DATA_EXTRACTED;
     const messageGroupId = 'invoice-group';
     const message = makeFakeMessage();
     await sut.execute(message);
