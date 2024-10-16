@@ -14,7 +14,6 @@ export class InvoiceHistoryController implements Controller {
       const results = await this.findAllAnalyzedResultsUseCase.execute(email);
       return ok(results);
     } catch (error) {
-      console.error(error);
       return internalServerError(error.message);
     }
   }
